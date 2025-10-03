@@ -2,13 +2,24 @@
 node_modules/
 **/node_modules/
 
-# Build outputs
+# Build / dist
 dist/
 **/dist/
+build/
+**/build/
+
+# Env
+.env
+.env.*
+!.env.example
 
 # Logs
 *.log
 pnpm-debug.log*
+
+# Tools
+.husky/
+.lintstagedrc.mjs
 
 # OS / IDE
 .DS_Store
