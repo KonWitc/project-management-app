@@ -1,4 +1,3 @@
-// @ts-check
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
@@ -6,12 +5,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
 export default tseslint.config(
   {
-    ignores: [
-      'dist',
-      'node_modules',
-      '.husky',
-      '.lintstagedrc.mjs',
-    ],
+    ignores: ['dist/**', 'node_modules/**', '.husky', '**/eslint.config.mjs', '**/*.config.mjs'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -24,7 +18,7 @@ export default tseslint.config(
       },
       parserOptions: {
         projectService: true,
-        allowDefaultProject: true, 
+        allowDefaultProject: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },

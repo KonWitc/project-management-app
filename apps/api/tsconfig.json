@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "module": "CommonJS",
+    "module": "commonjs",
     "lib": ["ES2021"],
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
+    "paths": { "@/*": ["src/*"] },
 
     "strict": true,
     "noImplicitReturns": true,
@@ -26,8 +24,9 @@
     "sourceMap": true,
     "incremental": true,
     "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node"]
+    "types": ["node"],
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]
 }

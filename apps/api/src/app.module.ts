@@ -1,15 +1,24 @@
-import { HealthController } from './health.controller';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { RolesGuard } from './common/guards/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/app'),],
-  controllers: [HealthController],
-  controllers: [AppController],
-  providers: [AppService],
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['apps/api/.env', '.env'],
+      validate: (cfg) => cfg,
+    }),
+    JwtModule.register({}),
+    MongooseModule.forRoot(process.env.MONGO_URI!),
+    UsersModule,
+    AuthModule,
+  ],
+  providers: [{ provide: APP_GUARD, useClass: RolesGuard }],
 })
 export class AppModule {}
