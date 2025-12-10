@@ -1,0 +1,1 @@
+typedef TwoValuesChanged<A, B> = void Function(A valueA, B valueB);

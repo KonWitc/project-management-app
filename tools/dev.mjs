@@ -1,131 +1,135 @@
 // tools/dev.mjs
 import { spawn } from "node:child_process";
-import { existsSync, cpSync, mkdirSync } from "node:fs";
+import { existsSync, cpSync } from "node:fs";
 import { resolve } from "node:path";
-import chokidar from "chokidar";
+import chalk from "chalk";
 
-const root = resolve(".");
+const isWin = process.platform === "win32";
+
+// --- Paths ---
 const apiDir = resolve("apps/api");
 const appDir = resolve("apps/app");
 
-// ---- CONFIG DEV ----
-const API_PORT = 3000; // Backend: http://localhost:3000
-const WEB_PORT = 5173; // Flutter web: http://localhost:5173
+// --- Config ---
+const API_PORT = 3000;
+const WEB_PORT = 5173;
 const CLIENT_ORIGIN = `http://localhost:${WEB_PORT}`;
 
-// .env for API – copy from .env.example if empty
+// --- .env ---
 const envExample = resolve(apiDir, ".env.example");
 const envFile = resolve(apiDir, ".env");
 if (!existsSync(envFile) && existsSync(envExample)) {
   cpSync(envExample, envFile);
-  console.log("[setup] Copied apps/api/.env from .env.example");
+  console.log(chalk.yellow("[setup] Copied apps/api/.env"));
 }
 
-// ensure tools dir
-mkdirSync(resolve(root, "tools"), { recursive: true });
+function run(name, color, cmd, args = [], opts = {}) {
+  const prefix = chalk[color](`[${name}]`);
 
-// --- Helper for logs ---
-function run(name, cmd, args, opts = {}) {
   const child = spawn(cmd, args, {
-    stdio: "pipe",
-    shell: process.platform === "win32",
+    shell: isWin,
+    stdio: opts.stdio ?? ["ignore", "pipe", "pipe"],
     ...opts,
   });
-  child.stdout.on("data", (d) => process.stdout.write(`[${name}] ${d}`));
-  child.stderr.on("data", (d) => process.stderr.write(`[${name}] ${d}`));
-  child.on("close", (code) => console.log(`[${name}] exited with ${code}`));
+
+  if (child.stdout && opts.stdio !== "inherit") {
+    child.stdout.on("data", (d) => {
+      process.stdout.write(`${prefix} ${d}`);
+    });
+  }
+
+  if (child.stderr && opts.stdio !== "inherit") {
+    child.stderr.on("data", (d) => {
+      process.stderr.write(`${prefix} ${chalk.red(d)}`);
+    });
+  }
+
+  child.on("error", (err) => {
+    console.error(`${prefix} ${chalk.red(`spawn error: ${err.message}`)}`);
+  });
+
+  child.on("close", (code) => {
+    console.log(`${prefix} ${chalk.red(`exit code ${code}`)}`);
+  });
+
   return child;
 }
 
-// --- Helper with stdin (for Flutter hot reload) ---
-function runWithStdin(name, cmd, args, opts = {}) {
-  const child = spawn(cmd, args, {
-    stdio: ["pipe", "pipe", "pipe"],
-    shell: process.platform === "win32",
-    ...opts,
-  });
-  child.stdout.on("data", (d) => process.stdout.write(`[${name}] ${d}`));
-  child.stderr.on("data", (d) => process.stderr.write(`[${name}] ${d}`));
-  child.on("close", (code) => console.log(`[${name}] exited with ${code}`));
-  return child;
-}
-
-// --- BACKEND (NestJS) ---
+// --- Backend (NestJS) ---
 const apiEnv = {
   ...process.env,
   PORT: String(API_PORT),
-  CLIENT_ORIGIN: CLIENT_ORIGIN,
+  CLIENT_ORIGIN,
 };
+
 const api = run(
   "API",
-  process.platform === "win32" ? "powershell" : "bash",
-  [
-    process.platform === "win32"
-      ? `cd "${apiDir}" ; pnpm i ; pnpm start:dev`
-      : `cd "${apiDir}" && pnpm i && pnpm start:dev`,
-  ],
-  { env: apiEnv }
+  "green",
+  "pnpm",
+  ["start:dev"],
+  {
+    cwd: apiDir,
+    env: apiEnv,
+  }
 );
 
-// --- TypeScript watcher ---
+// --- TSC Watcher ( TS -> JS ) ---
 const tsc = run(
   "TSC",
-  process.platform === "win32" ? "powershell" : "bash",
-  [
-    process.platform === "win32"
-      ? `cd "${apiDir}" ; npx tsc --watch --preserveWatchOutput`
-      : `cd "${apiDir}" && npx tsc --watch --preserveWatchOutput`,
-  ]
+  "yellow",
+  "npx",
+  ["tsc", "--watch", "--preserveWatchOutput"],
+  {
+    cwd: apiDir,
+  }
 );
 
-// --- FRONTEND (Flutter web) ---
-const app = runWithStdin(
-  "WEB",
-  process.platform === "win32" ? "powershell" : "bash",
-  [
-    process.platform === "win32"
-      ? `cd "${appDir}" ; dart pub get ; flutter run -d chrome --web-port ${WEB_PORT} --dart-define=API_BASE=http://localhost:${API_PORT}`
-      : `cd "${appDir}" && dart pub get && flutter run -d chrome --web-port ${WEB_PORT} --dart-define=API_BASE=http://localhost:${API_PORT}`,
-  ]
-);
+// --- Frontend (Flutter Web) ---
+console.log(chalk.cyan("[WEB] Starting Flutter…"));
 
-// --- Hot reload watcher for Flutter ---
-let reloadTimer = null;
-function triggerHotReload() {
-  if (!app?.stdin) return;
-  if (reloadTimer) clearTimeout(reloadTimer);
-  reloadTimer = setTimeout(() => {
-    try {
-      app.stdin.write("r\n"); // Flutter hot reload
-      console.log("[WATCH] 🔁 Hot reload triggered");
-    } catch (e) {
-      console.error("[WATCH] Hot reload failed:", e.message);
-    }
-  }, 150);
-}
+const flutterArgs = [
+  "run",
+  "-d",
+  "chrome",
+  "--web-port",
+  String(WEB_PORT),
+  `--dart-define=API_BASE_URL=http://localhost:${API_PORT}`,
+];
 
-const webWatch = chokidar
-  .watch(`${appDir}/lib/**/*.dart`, { ignoreInitial: true })
-  .on("add", triggerHotReload)
-  .on("change", triggerHotReload)
-  .on("unlink", triggerHotReload);
+const web = run("APP", "cyan", "flutter", flutterArgs, {
+  cwd: appDir,
+  stdio: "inherit",
+});
 
-// --- graceful shutdown ---
+// --- Graceful shutdown ---
 function shutdown() {
-  console.log("\n🛑 Shutting down...");
-  try {
-    webWatch?.close();
-  } catch {}
+  console.log(chalk.redBright("\n🛑 Shutting down…"));
   try {
     api.kill();
+  } catch {}
+  try {
     tsc.kill();
-    app.kill();
+  } catch {}
+  try {
+    web.kill();
   } catch {}
   process.exit(0);
 }
+
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
+// --- Info banner ---
 console.log(
-  `\n🚀 Dev start:\n- API:  http://localhost:${API_PORT}\n- WEB:  http://localhost:${WEB_PORT}\n`
+  chalk.bold.greenBright(`
+🚀 Dev started!
+
+${chalk.green("API:")}  http://localhost:${API_PORT}
+${chalk.cyan("WEB:")}  http://localhost:${WEB_PORT}
+
+Flutter hotkeys:
+ - ${chalk.cyan("r")}  hot reload
+ - ${chalk.cyan("R")}  hot restart
+ - Ctrl+C stop all
+`)
 );

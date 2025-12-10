@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:dio_web_adapter/dio_web_adapter.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +12,7 @@ class AuthRepository {
       _authDio.httpClientAdapter = BrowserHttpClientAdapter()
         ..withCredentials = true;
     }
+
     _dio.interceptors.add(
       QueuedInterceptorsWrapper(
         onRequest: (options, handler) {
@@ -41,7 +41,7 @@ class AuthRepository {
             final resp = await _retry(req);
             return handler.resolve(resp);
           } catch (_) {
-            // Refresh nie powiódł się: czyść access i puść oryginalny błąd dalej
+            // Refresh failed - clear access
             _accessToken = null;
             return handler.next(e);
           }
@@ -57,17 +57,24 @@ class AuthRepository {
   static const String _logoutPath = '/auth/logout';
   static const String _kRetriedKey = '__retried__';
 
-  final Dio _dio; // główne API
-  final Dio
-  _authDio; // wyłącznie do /auth/* (żeby nie wchodził interceptor z Authorization)
+  final Dio _dio;
+  final Dio _authDio;
 
   String? _accessToken;
 
   bool _isRefreshing = false;
   Completer<void>? _refreshCompleter;
 
+  Dio get dio => _dio;
+
   // ----- helpers -----
-  static bool _isAuthPath(String path) => path.startsWith('/auth/');
+  static bool _isAuthPath(String path) {
+    return path == _loginPath ||
+        path == _signupPath ||
+        path == _refreshPath ||
+        path == _logoutPath;
+  }
+
   static bool _shouldAttemptRefresh(int? status, String path) {
     // codes to refresh
     final isUnauthorized = status == 401 || status == 403 || status == 419;

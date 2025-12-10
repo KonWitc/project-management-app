@@ -1,19 +1,19 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, SchemaTypes, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument, SchemaTypes, Types } from "mongoose";
 
 export type UserDocument = HydratedDocument<User>;
 
 export enum UserStatus {
-  ACTIVE = 'active',
-  PENDING = 'pending',
-  DISABLED = 'disabled',
-  BANNED = 'banned',
+  ACTIVE = "active",
+  PENDING = "pending",
+  DISABLED = "disabled",
+  BANNED = "banned",
 }
 
 export enum AppRole {
-  USER = 'user',
-  MANAGER = 'manager',
-  ADMIN = 'admin',
+  USER = "user",
+  MANAGER = "manager",
+  ADMIN = "admin",
 }
 
 @Schema({ _id: false })
@@ -25,9 +25,9 @@ export const NotificationPrefsSchema = SchemaFactory.createForClass(Notification
 
 @Schema({ _id: false })
 class Preferences {
-  @Prop({ default: 'system' }) declare theme?: 'light' | 'dark' | 'system';
-  @Prop({ default: 'pl-PL' }) declare locale?: string;
-  @Prop({ default: 'Europe/Warsaw' }) declare timeZone?: string;
+  @Prop({ default: "system" }) declare theme?: "light" | "dark" | "system";
+  @Prop({ default: "pl-PL" }) declare locale?: string;
+  @Prop({ default: "Europe/Warsaw" }) declare timeZone?: string;
   @Prop({ type: NotificationPrefsSchema, default: () => ({}) })
   declare notifications?: NotificationPrefs;
 }
@@ -70,10 +70,10 @@ export class User {
   declare permissions: string[];
 
   // --- Organization / relations ---
-  @Prop({ type: SchemaTypes.ObjectId, ref: 'Organization' })
+  @Prop({ type: SchemaTypes.ObjectId, ref: "Organization" })
   declare organizationId?: Types.ObjectId;
 
-  @Prop({ type: [SchemaTypes.ObjectId], ref: 'Team', default: [] })
+  @Prop({ type: [SchemaTypes.ObjectId], ref: "Team", default: [] })
   declare teamIds?: Types.ObjectId[];
 
   // --- Profile and preferences ---
@@ -99,17 +99,17 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 // --- Indexes and hooks ---
 UserSchema.index(
-  { 'profile.username': 1 },
+  { "profile.username": 1 },
   { unique: true, sparse: true }, // unique only if username set
 );
 UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ status: 1, roles: 1 });
-UserSchema.index({ 'profile.displayName': 'text', email: 'text' }); // search
-UserSchema.index({ organizationId: 1, 'profile.username': 1 });
+UserSchema.index({ "profile.displayName": "text", email: "text" }); // search
+UserSchema.index({ organizationId: 1, "profile.username": 1 });
 UserSchema.index({ deletedAt: 1 }); // active users filter
 
 // hide in toJSON
-UserSchema.set('toJSON', {
+UserSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: (_doc, ret) => {
@@ -123,7 +123,7 @@ UserSchema.set('toJSON', {
 
     // set id as string
     const oid = r._id;
-    const toStr = typeof oid === 'string' ? oid : oid?.toHexString?.();
+    const toStr = typeof oid === "string" ? oid : oid?.toHexString?.();
     r.id = toStr ?? String(oid);
 
     // remove technical fields

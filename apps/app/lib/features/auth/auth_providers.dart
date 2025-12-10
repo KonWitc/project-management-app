@@ -1,80 +1,57 @@
+import 'dart:async';
+import 'package:app/features/auth/data/auth_repository.dart';
+import 'package:app/features/auth/domain/auth_state.dart';
+import 'package:app/network/dio_provider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:dio/dio.dart';
-import 'package:app/network/dio.dart';
-import 'package:app/features/auth/auth_repository.dart';
-
-final dioProvider = Provider<Dio>((ref) => createDio());
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final dio = ref.watch(dioProvider);
   return AuthRepository(dio);
 });
 
-class AuthState {
-  final bool isAuthenticated;
-  final bool busy;
-  final String? lastError;
-  const AuthState({
-    this.isAuthenticated = false,
-    this.busy = false,
-    this.lastError,
-  });
-
-  AuthState copy({bool? isAuthenticated, bool? busy, String? lastError}) =>
-      AuthState(
-        isAuthenticated: isAuthenticated ?? this.isAuthenticated,
-        busy: busy ?? this.busy,
-        lastError: lastError,
-      );
-}
-
-class AuthController extends Notifier<AuthState> {
-  late final AuthRepository _repo;
-
+class AuthController extends AsyncNotifier<AuthState> {
   @override
-  AuthState build() {
-    _repo = ref.read(authRepositoryProvider);
-    return AuthState(isAuthenticated: _repo.isAuthenticated);
-  }
+  FutureOr<AuthState> build() async {
+    final repo = ref.read(authRepositoryProvider);
 
-  Future<void> signIn(String email, String password) async {
-    state = state.copy(busy: true, lastError: null);
     try {
-      await _repo.signIn(email, password);
-      state = state.copy(isAuthenticated: true);
-      print(state);
-    } catch (e) {
-      state = state.copy(lastError: 'SingIn error: $e');
-    } finally {
-      state = state.copy(busy: false);
+      final user = await repo.me();
+      return AuthState.authenticated(user);
+    } catch (_) {
+      return const AuthState.unauthenticated();
     }
+  }
+  
+  Future<void> signIn(String email, String password) async {
+    state = const AsyncLoading();
+
+    final repo = ref.read(authRepositoryProvider);
+
+    state = await AsyncValue.guard(() async {
+      await repo.signIn(email, password);
+      final user = await repo.me();
+      return AuthState.authenticated(user);
+    });
   }
 
   Future<void> signUp(String email, String password) async {
-    state = state.copy(busy: true, lastError: null);
-    try {
-      await _repo.signUp(email, password);
-      state = state.copy(isAuthenticated: true);
-    } catch (e) {
-      state = state.copy(lastError: 'Błąd rejestracji: $e');
-    } finally {
-      state = state.copy(busy: false);
-    }
+    state = const AsyncLoading();
+    final repo = ref.read(authRepositoryProvider);
+
+    state = await AsyncValue.guard(() async {
+      await repo.signUp(email, password);
+      final user = await repo.me();
+      return AuthState.authenticated(user);
+    });
   }
 
   Future<void> logout() async {
-    state = state.copy(busy: true, lastError: null);
-    try {
-      await _repo.logout();
-      state = state.copy(isAuthenticated: false);
-    } finally {
-      state = state.copy(busy: false);
-    }
+    final repo = ref.read(authRepositoryProvider);
+    await repo.logout();
+    state = const AsyncData(AuthState.unauthenticated());
   }
-
-  Future<Map<String, dynamic>> me() => _repo.me();
 }
 
-final authProvider = NotifierProvider<AuthController, AuthState>(
+final authProvider = AsyncNotifierProvider<AuthController, AuthState>(
   AuthController.new,
 );
