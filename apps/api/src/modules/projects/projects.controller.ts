@@ -12,7 +12,6 @@ export class ProjectsController {
 
   @Get()
   async getProjects(@User() user: AuthUser, @Query() query: GetProjectsQueryDto) {
-    console.log("get projects controller");
     return this.projectsService.getProjects(user.userId, query);
   }
 

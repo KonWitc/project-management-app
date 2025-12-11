@@ -1,5 +1,11 @@
 import 'package:app/features/projects/domain/models/project_enums.dart';
 
+class _Unset {
+  const _Unset();
+}
+
+const _unset = _Unset();
+
 class ProjectFilters {
   final String? search;
   final Set<ProjectStatus> status;
@@ -28,26 +34,34 @@ class ProjectFilters {
   });
 
   ProjectFilters copyWith({
-    String? search,
+    Object? search = _unset,
+    Object? ownerId = _unset,
+    Object? memberId = _unset,
+    Object? deadlineFrom = _unset,
+    Object? deadlineTo = _unset,
+
     Set<ProjectStatus>? status,
-    String? ownerId,
-    String? memberId,
     List<String>? tags,
-    DateTime? deadlineFrom,
-    DateTime? deadlineTo,
     int? page,
     int? limit,
     SortBy? sortBy,
     SortDir? sortDir,
   }) {
     return ProjectFilters(
-      search: search ?? this.search,
+      search: identical(search, _unset) ? this.search : search as String?,
+      ownerId: identical(ownerId, _unset) ? this.ownerId : ownerId as String?,
+      memberId: identical(memberId, _unset)
+          ? this.memberId
+          : memberId as String?,
+      deadlineFrom: identical(deadlineFrom, _unset)
+          ? this.deadlineFrom
+          : deadlineFrom as DateTime?,
+      deadlineTo: identical(deadlineTo, _unset)
+          ? this.deadlineTo
+          : deadlineTo as DateTime?,
+
       status: status ?? this.status,
-      ownerId: ownerId ?? this.ownerId,
-      memberId: memberId ?? this.memberId,
       tags: tags ?? this.tags,
-      deadlineFrom: deadlineFrom ?? this.deadlineFrom,
-      deadlineTo: deadlineTo ?? this.deadlineTo,
       page: page ?? this.page,
       limit: limit ?? this.limit,
       sortBy: sortBy ?? this.sortBy,

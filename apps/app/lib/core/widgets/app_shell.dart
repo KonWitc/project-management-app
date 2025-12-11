@@ -1,8 +1,8 @@
-import 'package:app/core/routing/route_names.dart';
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/core/routing/route_paths.dart';
+import 'package:app/core/widgets/responsive_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:app/core/widgets/responsive_builder.dart';
 
 class AppShell extends StatelessWidget {
   final Widget child;
@@ -44,6 +44,8 @@ class AppShell extends StatelessWidget {
   }
 }
 
+// ───────────────── Desktop Rail ─────────────────
+
 class _DesktopRail extends StatelessWidget {
   final int currentIndex;
 
@@ -74,21 +76,9 @@ class _DesktopRail extends StatelessWidget {
       ],
     );
   }
-
-  void _goTo(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        context.goNamed(RouteNames.projects);
-        break;
-      case 1:
-        context.goNamed(RouteNames.myWork);
-        break;
-      case 2:
-        context.goNamed(RouteNames.settings);
-        break;
-    }
-  }
 }
+
+// ───────────────── Bottom Nav ─────────────────
 
 class _BottomNav extends StatelessWidget {
   final int currentIndex;
@@ -116,18 +106,18 @@ class _BottomNav extends StatelessWidget {
       ],
     );
   }
+}
 
-  void _goTo(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        context.goNamed(RouteNames.projects);
-        break;
-      case 1:
-        context.goNamed(RouteNames.myWork);
-        break;
-      case 2:
-        context.goNamed(RouteNames.settings);
-        break;
-    }
+void _goTo(BuildContext context, int index) {
+  switch (index) {
+    case 0:
+      context.goNamed(AppRouteNames.projects);
+      break;
+    case 1:
+      context.goNamed(AppRouteNames.myWork);
+      break;
+    case 2:
+      context.goNamed(AppRouteNames.settings);
+      break;
   }
 }

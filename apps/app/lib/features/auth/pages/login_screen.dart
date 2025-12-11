@@ -1,8 +1,7 @@
-import 'package:app/core/routing/route_paths.dart';
+import 'package:app/core/routing/navigation_service_provider.dart';
 import 'package:app/core/widgets/app_scaffold.dart';
 import 'package:app/features/auth/auth_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -52,7 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final nextLoggedIn = next.value?.isAuthenticated ?? false;
 
       if (!prevLoggedIn && nextLoggedIn) {
-        context.go(RoutePaths.projects);
+        ref.read(navigationServiceProvider).goToProjects();
       }
     });
 

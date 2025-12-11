@@ -15,17 +15,16 @@ export class ProjectsService {
   constructor(@InjectModel(Project.name) private readonly projectModel: Model<Project>) {}
 
   async getProjects(currentUserId: string, query: GetProjectsQueryDto) {
-    console.log("get projects service");
     const {
       page = 1,
       limit = 20,
-      sortBy = "createdAt",
-      sortDir = "desc",
-      // search,
+      sortBy,
+      sortDir,
+      search,
       status,
       // ownerId,
       // memberId,
-      // tags,
+      tags,
       // startFrom,
       // startTo,
       deadlineFrom,
@@ -71,20 +70,20 @@ export class ProjectsService {
     //   filter.memberIds = new Types.ObjectId(memberId);
     // }
 
-    // // tags – every tag needs to be present
-    // if (tags?.length) {
-    //   filter.tags = { $all: tags };
-    // }
+    // tags – at least one tag needs to be present
+    if (tags?.length) {
+      filter.tags = { $in: tags };
+    }
 
-    // // search – regex for name/description
-    // if (search) {
-    //   const regex = new RegExp(search.trim(), "i");
-    //   filter.$and = (filter.$and || []).concat([
-    //     {
-    //       $or: [{ name: regex }, { description: regex }],
-    //     },
-    //   ]);
-    // }
+    // search – regex for name/description
+    if (search) {
+      const regex = new RegExp(search.trim(), "i");
+      filter.$and = (filter.$and || []).concat([
+        {
+          $or: [{ name: regex }, { description: regex }],
+        },
+      ]);
+    }
 
     // deadline range
     if (deadlineFrom || deadlineTo) {
@@ -113,8 +112,6 @@ export class ProjectsService {
         .exec(),
       this.projectModel.countDocuments(),
     ]);
-
-    console.log(items);
 
     return {
       items,

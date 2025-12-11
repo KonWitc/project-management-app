@@ -1,4 +1,5 @@
 import 'package:app/features/projects/domain/models/project_enums.dart';
+import 'package:app/features/projects/presentation/widgets/filters/filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class ProjectSortDirection extends StatelessWidget {
@@ -13,8 +14,6 @@ class ProjectSortDirection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menuController = MenuController();
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
 
     return MenuAnchor(
       controller: menuController,
@@ -34,23 +33,20 @@ class ProjectSortDirection extends StatelessWidget {
             ),
           ),
       ],
-      child: Chip(
-        label: InkWell(
-          onTap: () {
-            if (menuController.isOpen) {
-              menuController.close();
-            } else {
-              menuController.open();
-            }
-          },
-          child: Icon(
-            selectedSortDir == SortDir.asc
-                ? Icons.arrow_upward
-                : Icons.arrow_downward,
-            size: 14,
-          ),
+      child: ProjectsFilterChip(
+        onTap: () {
+          if (menuController.isOpen) {
+            menuController.close();
+          } else {
+            menuController.open();
+          }
+        },
+        label: Icon(
+          selectedSortDir == SortDir.asc
+              ? Icons.arrow_upward
+              : Icons.arrow_downward,
+          size: 14,
         ),
-        side: BorderSide(color: cs.outline),
       ),
     );
   }

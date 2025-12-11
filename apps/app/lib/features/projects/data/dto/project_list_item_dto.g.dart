@@ -18,6 +18,7 @@ ProjectListItemDto _$ProjectListItemDtoFromJson(Map<String, dynamic> json) =>
           ? null
           : DateTime.parse(json['deadline'] as String),
       category: json['category'] as String?,
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$ProjectListItemDtoToJson(ProjectListItemDto instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$ProjectListItemDtoToJson(ProjectListItemDto instance) =>
       'ownerId': instance.ownerId,
       'deadline': instance.deadline?.toIso8601String(),
       'category': instance.category,
+      'tags': instance.tags,
     };

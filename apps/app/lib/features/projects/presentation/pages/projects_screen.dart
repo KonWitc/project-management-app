@@ -1,6 +1,7 @@
+import 'package:app/core/routing/navigation_service_provider.dart';
 import 'package:app/core/widgets/app_scaffold.dart';
-import 'package:app/features/projects/presentation/pages/projects_screen/project_card.dart';
-import 'package:app/features/projects/presentation/pages/projects_screen/filters/project_filters_row.dart';
+import 'package:app/features/projects/presentation/widgets/card/project_card.dart';
+import 'package:app/features/projects/presentation/widgets/filters/project_filters_row.dart';
 import 'package:app/features/projects/presentation/providers/project_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -52,7 +53,14 @@ class ProjectsGrid extends ConsumerWidget {
           itemCount: page.items.length,
           itemBuilder: (BuildContext context, int index) {
             final project = page.items[index];
-            return ProjectCard(project: project);
+            return ProjectCard(
+              project: project,
+              onTap: () {
+                ref
+                    .read(navigationServiceProvider)
+                    .goToProjectDetails(project.id);
+              },
+            );
           },
         );
       },

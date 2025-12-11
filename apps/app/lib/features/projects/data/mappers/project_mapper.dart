@@ -108,16 +108,18 @@ Project mapProjectDtoToDomain(ProjectDto dto) {
 }
 
 Project mapProjectListItemDtoToDomain(ProjectListItemDto dto) {
+
   return Project(
     id: dto.id,
     name: dto.name,
+    description: dto.description,
     status: _mapStatus(dto.status ?? 'it'),
     organizationId: '',
     ownerId: dto.ownerId ?? '1',
     memberIds: [],
     milestones: [],
     tasks: [],
-    tags: [],
+    tags: dto.tags ?? [],
     deadline: dto.deadline,
     category: _mapCategory(dto.category),
   );

@@ -1,4 +1,5 @@
 import 'package:app/core/utils/types/multiple_value_changed.dart';
+import 'package:app/features/projects/presentation/widgets/filters/filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -51,41 +52,25 @@ class DeadlineFilter extends StatelessWidget {
       }
     }
 
-    return Material(
-      color: cs.surface,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: cs.outline),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+    return ProjectsFilterChip(
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurface),
+          ),
+
+          if (hasValue) const SizedBox(width: 6),
+          if (hasValue)
             InkWell(
-              onTap: pickRange,
-              child: Text(
-                label,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: cs.onSurface,
-                ),
-              ),
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => onChanged(null, null),
+              child: Icon(Icons.close, size: 16, color: cs.onSurface),
             ),
-            if (hasValue) const SizedBox(width: 6),
-            if (hasValue)
-              InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () => onChanged(null, null),
-                child: Icon(
-                  Icons.close,
-                  size: 16,
-                  color: cs.onSurface.withValues(alpha: 0.7),
-                ),
-              ),
-          ],
-        ),
+        ],
       ),
+      onTap: pickRange,
     );
   }
 }

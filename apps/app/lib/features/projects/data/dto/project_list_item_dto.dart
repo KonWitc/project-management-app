@@ -13,6 +13,7 @@ class ProjectListItemDto {
   final String? ownerId;
   final DateTime? deadline;
   final String? category;
+  final List<String>? tags;
 
   const ProjectListItemDto({
     required this.id,
@@ -23,6 +24,7 @@ class ProjectListItemDto {
     this.ownerId,
     this.deadline,
     this.category,
+    this.tags,
   });
 
   factory ProjectListItemDto.fromJson(Map<String, dynamic> json) =>

@@ -3,7 +3,7 @@ import 'package:app/features/projects/data/mappers/project_mapper.dart';
 import 'package:app/features/projects/domain/models/project_filters.dart';
 import 'package:app/features/projects/data/dto/project_list_item_dto.dart';
 import 'package:app/features/projects/domain/models/project.dart';
-import 'package:app/features/projects/domain/repositories/project_repository.dart';
+import 'package:app/features/projects/domain/repository/project_repository.dart';
 import 'package:dio/dio.dart';
 
 class ProjectRepositoryImpl implements ProjectRepository {
@@ -56,15 +56,17 @@ class ProjectRepositoryImpl implements ProjectRepository {
   }
 
   @override
-  Future<Project> getOneProject() {
+  Future<Project> getProjectById(id) {
     // TODO: implement getOneProject
     throw UnimplementedError();
   }
 
   @override
   Future<List<String>> getTags() async {
-    final resp = await _dio.get<Map<String, dynamic>>(_projectsPath);
+    final response = await _dio.get<List<dynamic>>('$_projectsPath/tags');
 
-    return resp.data?['tags'];
+    final data = response.data ?? [];
+
+    return data.map((e) => e.toString()).toList();
   }
 }

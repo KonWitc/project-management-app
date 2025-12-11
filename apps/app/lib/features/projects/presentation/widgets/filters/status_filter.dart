@@ -1,4 +1,5 @@
 import 'package:app/features/projects/domain/models/project_enums.dart';
+import 'package:app/features/projects/presentation/widgets/filters/filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class StatusFilter extends StatelessWidget {
@@ -70,8 +71,7 @@ class StatusFilter extends StatelessWidget {
             ),
           ),
       ],
-      child: Chip(
-        label: InkWell(
+      child: ProjectsFilterChip(
           onTap: () {
             if (menuController.isOpen) {
               menuController.close();
@@ -79,12 +79,10 @@ class StatusFilter extends StatelessWidget {
               menuController.open();
             }
           },
-          child: Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurface),
-          ),
+        label: Text(
+          label,
+          style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurface),
         ),
-        side: BorderSide(color: cs.outline),
       ),
     );
   }

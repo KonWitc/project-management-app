@@ -11,8 +11,9 @@ class ProjectFiltersNotifier extends Notifier<ProjectFilters> {
   // --- SETTERS ---
 
   void setSearch(String? value) {
+    final v = value?.trim();
     state = state.copyWith(
-      search: (value == null || value.isEmpty) ? null : value,
+      search: (v == null || v.isEmpty) ? null : v,
       page: 1,
     );
   }
@@ -46,29 +47,7 @@ class ProjectFiltersNotifier extends Notifier<ProjectFilters> {
   }
 
   void setDeadlineRange(DateTime? from, DateTime? to) {
-    // clear
-    if (from == null && to == null) {
-      state = ProjectFilters(
-        search: state.search,
-        status: state.status,
-        ownerId: state.ownerId,
-        memberId: state.memberId,
-        tags: state.tags,
-        deadlineFrom: null,
-        deadlineTo: null,
-        page: 1,
-        limit: state.limit,
-        sortBy: state.sortBy,
-        sortDir: state.sortDir,
-      );
-      return;
-    }
-
-    state = state.copyWith(
-      deadlineFrom: from,
-      deadlineTo: to,
-      page: 1,
-    );
+    state = state.copyWith(deadlineFrom: from, deadlineTo: to, page: 1);
   }
 
   void setSort({required SortBy sortBy, required SortDir sortDir}) {

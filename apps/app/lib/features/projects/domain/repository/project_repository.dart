@@ -4,7 +4,7 @@ import 'package:app/features/projects/domain/models/project.dart';
 
 abstract class ProjectRepository {
   Future<PaginatedResult<Project>> getProjects({ProjectFilters? filters});
-  Future<Project> getOneProject();
+  Future<Project> getProjectById(id);
 
   Future<List<String>> getTags();
 }

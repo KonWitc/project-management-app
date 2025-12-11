@@ -1,8 +1,10 @@
-import 'package:app/features/projects/presentation/pages/projects_screen/filters/deadline_filter.dart';
-import 'package:app/features/projects/presentation/pages/projects_screen/filters/sort_by.dart';
-import 'package:app/features/projects/presentation/pages/projects_screen/filters/sort_direction.dart';
-import 'package:app/features/projects/presentation/pages/projects_screen/filters/status_filter.dart';
+import 'package:app/features/projects/presentation/widgets/filters/deadline_filter.dart';
+import 'package:app/features/projects/presentation/widgets/filters/projects_search.dart';
+import 'package:app/features/projects/presentation/widgets/filters/sort_by.dart';
+import 'package:app/features/projects/presentation/widgets/filters/sort_direction.dart';
+import 'package:app/features/projects/presentation/widgets/filters/status_filter.dart';
 import 'package:app/features/projects/presentation/providers/projects_filters_provider.dart';
+import 'package:app/features/projects/presentation/widgets/filters/tags_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -41,6 +43,14 @@ class ProjectFiltersRow extends ConsumerWidget {
             sortDir: newSortDir,
           ),
         ),
+        TagsFilter(
+          selectedTags: filters.tags,
+          onChanged: (newTags) => filtersNotifier.setTags(newTags),
+        ),
+        const Spacer(),
+        ProjectsSearch(
+          onChanged: (search) => filtersNotifier.setSearch(search),
+        )
       ],
     );
   }

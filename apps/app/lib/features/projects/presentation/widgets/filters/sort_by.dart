@@ -1,4 +1,5 @@
 import 'package:app/features/projects/domain/models/project_enums.dart';
+import 'package:app/features/projects/presentation/widgets/filters/filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class ProjectSortBy extends StatelessWidget {
@@ -34,21 +35,19 @@ class ProjectSortBy extends StatelessWidget {
             ),
           ),
       ],
-      child: Chip(
-        label: InkWell(
-          onTap: () {
-            if (menuController.isOpen) {
-              menuController.close();
-            } else {
-              menuController.open();
-            }
-          },
-          child: Text(
-            'Sort: ${selectedSortBy.label}',
-            style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurface),
-          ),
+
+      child: ProjectsFilterChip(
+        label: Text(
+          'Sort: ${selectedSortBy.label}',
+          style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurface),
         ),
-        side: BorderSide(color: cs.outline),
+        onTap: () {
+          if (menuController.isOpen) {
+            menuController.close();
+          } else {
+            menuController.open();
+          }
+        },
       ),
     );
   }
