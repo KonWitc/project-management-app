@@ -6,14 +6,13 @@ part 'project_dto.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ProjectDto {
-  @JsonKey(name: '_id')
   final String id;
 
   final String name;
   final String? description;
   final String status; // 'draft' | 'active' | 'completed' | 'archived'
 
-  final String organizationId;
+  final String? organizationId;
   final String ownerId;
   final List<String> memberIds;
 
@@ -21,8 +20,14 @@ class ProjectDto {
   final DateTime? endDate;
   final DateTime? deadline;
 
+  final int milestonesCount;
+  final int completedMilestonesCount;
   final List<MilestoneDto> milestones;
-  final List<TaskDto> tasks;
+
+  final int tasksCount;
+  final int openTasksCount;
+  final int completedTasksCount;
+  final List<TaskDto> upcomingTasks;
 
   final double? budget;
   final double? actualCost;
@@ -36,19 +41,24 @@ class ProjectDto {
     required this.name,
     this.description,
     required this.status,
-    required this.organizationId,
+    this.organizationId,
     required this.ownerId,
     required this.memberIds,
     this.startDate,
     this.endDate,
     this.deadline,
     required this.milestones,
-    required this.tasks,
+    required this.upcomingTasks,
     this.budget,
     this.actualCost,
     this.revenueEstimate,
     required this.tags,
     this.category,
+    required this.milestonesCount,
+    required this.completedMilestonesCount,
+    required this.tasksCount,
+    required this.openTasksCount,
+    required this.completedTasksCount,
   });
 
   factory ProjectDto.fromJson(Map<String, dynamic> json) =>

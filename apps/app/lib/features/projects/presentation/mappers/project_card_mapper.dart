@@ -1,12 +1,16 @@
+import 'package:app/core/theme/app_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/features/projects/domain/models/project.dart';
 import 'package:app/features/projects/domain/models/project_enums.dart';
-import 'package:app/features/projects/presentation/models/project_card_model.dart';
+import 'package:app/features/projects/presentation/models/card/project_card_model.dart';
 
 class ProjectCardMapper {
-  static ProjectCardModel mapDomainToPresentation(Project project) {
+  static ProjectCardModel mapDomainToPresentation(
+    Project project,
+    ColorScheme colorScheme,
+  ) {
     // --- Date labels ---
     final startDateLabel = _formatDate(project.startDate);
     final endDateLabel = _formatDate(project.endDate);
@@ -30,12 +34,15 @@ class ProjectCardMapper {
       costDifference = signedCostDiff.abs();
     }
 
-    final Color? costDifferenceColor = _mapCostDifferenceColor(signedCostDiff);
+    final Color? costDifferenceColor = _mapCostDifferenceColor(
+      signedCostDiff,
+      colorScheme,
+    );
     final IconData costDifferenceIcon = _mapCostDifferenceIcon(signedCostDiff);
 
     // --- Status mapping ---
     final String statusLabel = project.status.label;
-    final Color statusColor = _mapStatusToColor(project.status, isOverdue);
+    final Color statusColor = _mapStatusToColor(project.status, isOverdue, colorScheme);
 
     return ProjectCardModel(
       id: project.id,
@@ -87,7 +94,11 @@ class ProjectCardMapper {
   // Status color (presentation-level)
   // ---------------------------------------------------------------------------
 
-  static Color _mapStatusToColor(ProjectStatus status, bool isOverdue) {
+  static Color _mapStatusToColor(
+    ProjectStatus status,
+    bool isOverdue,
+    ColorScheme colorScheme,
+  ) {
     // You can later replace these with your ColorScheme values
     if (isOverdue && status == ProjectStatus.active) {
       return Colors.red;
@@ -95,13 +106,13 @@ class ProjectCardMapper {
 
     switch (status) {
       case ProjectStatus.draft:
-        return Colors.amber;
+        return colorScheme.tertiary;
       case ProjectStatus.active:
-        return Colors.green;
+        return colorScheme.ceruleanBlue;
       case ProjectStatus.completed:
-        return Colors.blueAccent;
+        return colorScheme.primary;
       case ProjectStatus.archived:
-        return Colors.grey.shade600;
+        return colorScheme.outline;
     }
   }
 
@@ -114,12 +125,15 @@ class ProjectCardMapper {
   // signedDiff < 0     → under budget (actual < budget)
   // ---------------------------------------------------------------------------
 
-  static Color? _mapCostDifferenceColor(double? signedDiff) {
+  static Color? _mapCostDifferenceColor(
+    double? signedDiff,
+    ColorScheme colorScheme,
+  ) {
     if (signedDiff == null) return null;
-    if (signedDiff == 0) return Colors.grey;
+    if (signedDiff == 0) return colorScheme.outline;
 
-    // later: use colorScheme.error / colorScheme.tertiary, etc.
-    return signedDiff > 0 ? Colors.red : Colors.green;
+    // Racing red for over budget (warning), cerulean blue for under budget (good)
+    return signedDiff > 0 ? colorScheme.racingRed : colorScheme.ceruleanBlue;
   }
 
   static IconData _mapCostDifferenceIcon(double? signedDiff) {

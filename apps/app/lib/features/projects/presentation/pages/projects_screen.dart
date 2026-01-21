@@ -27,7 +27,8 @@ class ProjectsGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncProjects = ref.watch(projectsListProvider);
+    final colorScheme = Theme.of(context).colorScheme;
+    final asyncProjects = ref.watch(projectsListProvider(colorScheme));
 
     return asyncProjects.when(
       loading: () {

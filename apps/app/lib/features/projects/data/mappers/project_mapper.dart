@@ -70,8 +70,8 @@ ProjectCategory? _mapCategory(String? category) {
   }
 }
 
-ProjectStatus _mapStatus(String status) {
-  switch (status) {
+ProjectStatus _mapStatus(String raw) {
+  switch (raw) {
     case 'draft':
       return ProjectStatus.draft;
     case 'active':
@@ -85,42 +85,71 @@ ProjectStatus _mapStatus(String status) {
   }
 }
 
+/// FULL / DETAILS DTO -> DOMAIN
 Project mapProjectDtoToDomain(ProjectDto dto) {
   return Project(
     id: dto.id,
     name: dto.name,
     description: dto.description,
     status: _mapStatus(dto.status),
+
     organizationId: dto.organizationId,
     ownerId: dto.ownerId,
     memberIds: List.unmodifiable(dto.memberIds),
+
     startDate: dto.startDate,
     endDate: dto.endDate,
     deadline: dto.deadline,
-    milestones: dto.milestones.map(_mapMilestone).toList(growable: false),
-    tasks: dto.tasks.map(mapTaskDtoToDomain).toList(growable: false),
+
     budget: dto.budget,
     actualCost: dto.actualCost,
     revenueEstimate: dto.revenueEstimate,
+
     tags: List.unmodifiable(dto.tags),
     category: _mapCategory(dto.category),
+
+    milestones: ProjectMilestones(
+      count: dto.milestonesCount,
+      completedCount: dto.completedMilestonesCount,
+      items: dto.milestones.map(_mapMilestone).toList(growable: false),
+    ),
+
+    tasksOverview: ProjectTasksOverview(
+      count: dto.tasksCount,
+      openCount: dto.openTasksCount,
+      completedCount: dto.completedTasksCount,
+      upcomingTasks: dto.upcomingTasks
+          .map(mapTaskDtoToDomain)
+          .toList(growable: false),
+    ),
   );
 }
 
+/// LIST ITEM DTO -> DOMAIN (lightweight)
 Project mapProjectListItemDtoToDomain(ProjectListItemDto dto) {
-
   return Project(
     id: dto.id,
     name: dto.name,
     description: dto.description,
-    status: _mapStatus(dto.status ?? 'it'),
-    organizationId: '',
-    ownerId: dto.ownerId ?? '1',
-    memberIds: [],
-    milestones: [],
-    tasks: [],
-    tags: dto.tags ?? [],
+
+    status: _mapStatus(dto.status ?? 'draft'),
+
+    organizationId: dto.organizationId,
+    ownerId: dto.ownerId,
+    memberIds: const [],
+
+    startDate: null,
+    endDate: null,
     deadline: dto.deadline,
+
+    budget: null,
+    actualCost: null,
+    revenueEstimate: null,
+
+    tags: List.unmodifiable(dto.tags ?? const []),
     category: _mapCategory(dto.category),
+
+    milestones: null,
+    tasksOverview: null,
   );
 }

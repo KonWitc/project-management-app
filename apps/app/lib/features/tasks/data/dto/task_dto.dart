@@ -4,7 +4,7 @@ part 'task_dto.g.dart';
 
 @JsonSerializable()
 class TaskDto {
-  @JsonKey(name: '_id')
+  // @JsonKey(name: '_id')
   final String id;
 
   final String projectId;
@@ -27,7 +27,7 @@ class TaskDto {
   final double? estimateHours;
   final double? loggedHours;
 
-  final List<String> tags;
+  final List<String>? tags;
   final String? taskType;
 
   TaskDto({

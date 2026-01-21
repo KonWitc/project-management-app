@@ -1,10 +1,12 @@
 import 'package:app/app/app.dart';
 import 'package:app/features/auth/auth_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   runApp(const ProviderScope(child: App()));
 }
 

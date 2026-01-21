@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ProjectsService } from "./projects.service";
 import { GetProjectsQueryDto } from "./dto/get-projects.query.dto";
@@ -13,6 +13,11 @@ export class ProjectsController {
   @Get()
   async getProjects(@User() user: AuthUser, @Query() query: GetProjectsQueryDto) {
     return this.projectsService.getProjects(user.userId, query);
+  }
+
+  @Get(":id")
+  getProjectById(@Param("id") id: string) {
+    return this.projectsService.getProjectById(id);
   }
 
   @Get("tags")

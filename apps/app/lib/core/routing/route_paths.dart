@@ -7,6 +7,7 @@ class RoutePaths {
   static String projectDetails(String id) => '/projects/$id';
 
   static String projectOverview(String id) => '/projects/$id/overview';
+  static String projectMilestones(String id) => '/projects/$id/milestones';
   static String projectTasks(String id) => '/projects/$id/tasks';
   static String projectTimeline(String id) => '/projects/$id/timeline';
   static String projectFiles(String id) => '/projects/$id/files';

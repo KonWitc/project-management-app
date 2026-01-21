@@ -1,22 +1,20 @@
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/core/routing/router_notifier.dart';
 import 'package:app/core/widgets/app_shell.dart';
+import 'package:app/core/theme/theme_preview_page.dart';
 import 'package:app/features/auth/auth_providers.dart';
 import 'package:app/features/auth/pages/login_screen.dart';
+import 'package:app/features/projects/presentation/pages/milestone_screen.dart';
 import 'package:app/features/projects/presentation/pages/project_details_screen.dart';
 import 'package:app/features/projects/presentation/pages/projects_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider).value;
-  final loggedIn = authState?.isAuthenticated ?? false;
-
   final routerNotifier = ref.watch(routerNotifierProvider);
 
   return GoRouter(
     debugLogDiagnostics: true,
-
     refreshListenable: routerNotifier,
 
     routes: [
@@ -32,14 +30,29 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutePaths.projects,
             name: AppRouteNames.projects,
             builder: (_, __) => const ProjectsScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutePaths.projectDetails, // /projects/:id
+                name: AppRouteNames.projectDetails,
+                builder: (_, state) {
+                  final id = state.pathParameters['id']!;
+                  return ProjectDetailsScreen(projectId: id);
+                },
+              ),
+              GoRoute(
+            path: AppRoutePaths.themePreview,
+            name: AppRouteNames.themePreview,
+            builder: (_, __) => const ThemePreviewPage(),
+          ),
+            ],
           ),
           GoRoute(
-            path: AppRoutePaths.projectDetails,
-            name: AppRouteNames.projectDetails,
+            path: AppRoutePaths.projectMilestones,
+            name: AppRouteNames.projectMilestones,
             builder: (_, state) {
-              print(state.pathParameters);
-              final id = state.pathParameters['id']!;
-              return ProjectDetailsScreen(projectId: id);
+              return ThemePreviewPage();
+              // final id = state.pathParameters['id']!;
+              // return MilestonesPage(projectId: id);
             },
           ),
         ],
@@ -47,6 +60,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
 
     redirect: (context, state) {
+      final authState = ref.read(authProvider).value;
+      final loggedIn = authState?.isAuthenticated ?? false;
       final isLoggingIn = state.matchedLocation == AppRoutePaths.login;
 
       if (!loggedIn && !isLoggingIn) return AppRoutePaths.login;

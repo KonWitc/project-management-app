@@ -9,7 +9,7 @@ import { Connection, Model, Schema } from "mongoose";
 // Schemas
 import { User, UserSchema, AppRole, UserDocument } from "./users/user.schema";
 import { Project, ProjectSchema } from "./modules/projects/project.schema";
-import { Task, TaskSchema, TaskPriority, TaskStatus } from "./modules/tasks/task_schema";
+import { Task, TaskSchema, TaskPriority, TaskStatus } from "./modules/tasks/task.schema";
 import {
   Milestone,
   MilestoneSchema,

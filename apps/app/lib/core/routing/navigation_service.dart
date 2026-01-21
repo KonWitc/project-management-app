@@ -18,10 +18,10 @@ class NavigationService {
 
   // ── Methods for specific routes ────────────────────────────────
 
-  void goToLogin() => _router.goNamed(AppRouteNames.login);
+  void goToLogin() => _router.pushNamed(AppRouteNames.login);
 
-  void goToProjects() => _router.goNamed(AppRouteNames.projects);
+  void goToProjects() => _router.pushNamed(AppRouteNames.projects);
   
   void goToProjectDetails(String id) =>
-      _router.goNamed(AppRouteNames.projectDetails, pathParameters: {'id': id});
+      _router.pushNamed(AppRouteNames.projectDetails, pathParameters: {'id': id});
 }

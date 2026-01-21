@@ -5,7 +5,7 @@ import { JwtAccessStrategy } from "../../common/strategies/jwt-access.strategy";
 import { JwtRefreshStrategy } from "../../common/strategies/jwt-refresh.strategy";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Milestone, MilestoneSchema } from "./milestones/milestone.schema";
-import { Task, TaskSchema } from "../tasks/task_schema";
+import { Task, TaskSchema } from "../tasks/task.schema";
 import { Project, ProjectSchema } from "./project.schema";
 
 @Module({

@@ -1,4 +1,5 @@
 import 'package:app/core/models/paginated_result.dart';
+import 'package:app/features/projects/data/dto/project_dto.dart';
 import 'package:app/features/projects/data/mappers/project_mapper.dart';
 import 'package:app/features/projects/domain/models/project_filters.dart';
 import 'package:app/features/projects/data/dto/project_list_item_dto.dart';
@@ -56,9 +57,17 @@ class ProjectRepositoryImpl implements ProjectRepository {
   }
 
   @override
-  Future<Project> getProjectById(id) {
-    // TODO: implement getOneProject
-    throw UnimplementedError();
+  Future<Project> getProjectById(id) async {
+    final response = await _dio.get<Map<String, dynamic>>('$_projectsPath/$id');
+
+    if (response.data == null) {
+      throw Error();
+    }
+
+    final dto = ProjectDto.fromJson(response.data!);
+
+    final data = mapProjectDtoToDomain(dto);
+    return data;
   }
 
   @override
