@@ -18,6 +18,7 @@ class AppRoutePaths {
   static const projects = '/projects';
   static const projectDetails = ':id';
   static const projectMilestones = '/projects/:id/milestones';
+  static const projectTasks = '/projects/:id/tasks';
   
   static const myWork = '/my-work';
   static const settings = '/settings';

@@ -38,9 +38,6 @@ class MilestoneSummaryCard extends StatelessWidget {
 
     if (isLoading) {
       return Card(
-        elevation: 2,
-        surfaceTintColor: cs.surfaceTint,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -76,8 +73,6 @@ class MilestoneSummaryCard extends StatelessWidget {
 
     return Card(
       elevation: 2,
-      surfaceTintColor: cs.surfaceTint,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onViewAll,

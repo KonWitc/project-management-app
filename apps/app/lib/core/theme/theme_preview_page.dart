@@ -478,8 +478,8 @@ class _ColorPaletteSection extends StatelessWidget {
               child: _colorSwatch(
                 context,
                 'Background',
-                cs.background,
-                cs.onBackground,
+                cs.surface,
+                cs.onSurface,
               ),
             ),
             const SizedBox(width: 12),

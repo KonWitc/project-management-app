@@ -121,10 +121,10 @@ export class TasksService {
         .sort({ [sortField]: sortDirection })
         .skip(skip)
         .limit(limit)
-        .populate("assigneeId", "profile.displayName profile.username email")
-        .populate("reporterId", "profile.displayName profile.username email")
-        .populate("createdBy", "profile.displayName profile.username email")
-        .populate("updatedBy", "profile.displayName profile.username email")
+        // .populate("assigneeId", "profile.displayName profile.username email")
+        // .populate("reporterId", "profile.displayName profile.username email")
+        // .populate("createdBy", "profile.displayName profile.username email")
+        // .populate("updatedBy", "profile.displayName profile.username email")
         .lean()
         .exec(),
       this.taskModel.countDocuments(filter),
@@ -146,10 +146,10 @@ export class TasksService {
 
     const task = await this.taskModel
       .findOne({ _id: new Types.ObjectId(id), deletedAt: null })
-      .populate("assigneeId", "profile.displayName profile.username email")
-      .populate("reporterId", "profile.displayName profile.username email")
-      .populate("createdBy", "profile.displayName profile.username email")
-      .populate("updatedBy", "profile.displayName profile.username email")
+      // .populate("assigneeId", "profile.displayName profile.username email")
+      // .populate("reporterId", "profile.displayName profile.username email")
+      // .populate("createdBy", "profile.displayName profile.username email")
+      // .populate("updatedBy", "profile.displayName profile.username email")
       .lean()
       .exec();
 
@@ -204,8 +204,8 @@ export class TasksService {
         { $set: updateData },
         { new: true },
       )
-      .populate("assigneeId", "profile.displayName profile.username email")
-      .populate("reporterId", "profile.displayName profile.username email")
+      // .populate("assigneeId", "profile.displayName profile.username email")
+      // .populate("reporterId", "profile.displayName profile.username email")
       .lean()
       .exec();
 

@@ -35,28 +35,6 @@ TaskPriority _mapPriority(String value) {
   }
 }
 
-Task mapTaskDtoToDomain(TaskDto dto) {
-  return Task(
-    id: dto.id,
-    projectId: dto.projectId,
-    milestoneId: dto.milestoneId,
-    assigneeId: dto.assigneeId,
-    reporterId: dto.reporterId,
-    title: dto.title,
-    description: dto.description,
-    status: _mapStatus(dto.status),
-    priority: _mapPriority(dto.priority),
-    orderIndex: dto.orderIndex ?? 0,
-    startDate: dto.startDate,
-    dueDate: dto.dueDate,
-    completedAt: dto.completedAt,
-    estimateHours: dto.estimateHours,
-    loggedHours: dto.loggedHours,
-    tags: List.unmodifiable(dto.tags ?? []),
-    taskType: dto.taskType,
-  );
-}
-
 String _statusToString(TaskStatus status) {
   switch (status) {
     case TaskStatus.notStarted:
@@ -85,10 +63,32 @@ String _priorityToString(TaskPriority priority) {
   }
 }
 
+Task mapTaskDtoToDomain(TaskDto dto) {
+  return Task(
+    id: dto.id,
+    projectId: dto.projectId,
+    milestoneId: dto.milestoneId,
+    assigneeId: dto.assigneeId,
+    reporterId: dto.reporterId,
+    title: dto.title,
+    description: dto.description,
+    status: _mapStatus(dto.status),
+    priority: _mapPriority(dto.priority),
+    orderIndex: dto.orderIndex ?? 0,
+    startDate: dto.startDate,
+    dueDate: dto.dueDate,
+    completedAt: dto.completedAt,
+    estimateHours: dto.estimateHours,
+    loggedHours: dto.loggedHours,
+    tags: List.unmodifiable(dto.tags ?? []),
+    taskType: dto.taskType,
+  );
+}
+
 Map<String, dynamic> mapTaskDomainToCreateDto(Task task) {
   return {
     'title': task.title,
-    'description': task.description,
+    if (task.description != null) 'description': task.description,
     'projectId': task.projectId,
     if (task.milestoneId != null) 'milestoneId': task.milestoneId,
     if (task.assigneeId != null) 'assigneeId': task.assigneeId,

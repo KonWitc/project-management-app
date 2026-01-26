@@ -28,8 +28,13 @@ class TaskRepositoryImpl implements TaskRepository {
         .map((e) => e.cast<String, dynamic>())
         .toList();
 
-    final List<TaskDto> itemsDto =
-        itemsRaw.map((json) => TaskDto.fromJson(json)).toList();
+    final List<TaskDto> itemsDto = itemsRaw.map((json) {
+      try {
+        return TaskDto.fromJson(json);
+      } catch (error) {
+        return TaskDto.fromJson(json);
+      }
+    }).toList();
 
     final items = itemsDto.map((dto) => mapTaskDtoToDomain(dto)).toList();
 
@@ -37,7 +42,8 @@ class TaskRepositoryImpl implements TaskRepository {
     final page = (resp.data?['page'] as num?)?.toInt() ?? filters?.page ?? 1;
     final limit =
         (resp.data?['limit'] as num?)?.toInt() ?? filters?.limit ?? 20;
-    final totalPages = (resp.data?['totalPages'] as num?)?.toInt() ??
+    final totalPages =
+        (resp.data?['totalPages'] as num?)?.toInt() ??
         (limit == 0 ? 0 : (total / limit).ceil());
 
     return PaginatedResult<Task>(
@@ -67,8 +73,10 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<Task> updateTask(String id, Task task) async {
     final body = mapTaskDomainToUpdateDto(task);
-    final resp =
-        await _dio.put<Map<String, dynamic>>('$_tasksPath/$id', data: body);
+    final resp = await _dio.put<Map<String, dynamic>>(
+      '$_tasksPath/$id',
+      data: body,
+    );
     final dto = TaskDto.fromJson(resp.data!);
     return mapTaskDtoToDomain(dto);
   }

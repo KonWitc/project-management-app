@@ -7,7 +7,7 @@ part of 'task_dto.dart';
 // **************************************************************************
 
 TaskDto _$TaskDtoFromJson(Map<String, dynamic> json) => TaskDto(
-  id: json['id'] as String,
+  id: json['_id'] as String,
   projectId: json['projectId'] as String,
   milestoneId: json['milestoneId'] as String?,
   assigneeId: json['assigneeId'] as String?,
@@ -28,12 +28,13 @@ TaskDto _$TaskDtoFromJson(Map<String, dynamic> json) => TaskDto(
       : DateTime.parse(json['completedAt'] as String),
   estimateHours: (json['estimateHours'] as num?)?.toDouble(),
   loggedHours: (json['loggedHours'] as num?)?.toDouble(),
-  tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  tags:
+      (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
   taskType: json['taskType'] as String?,
 );
 
 Map<String, dynamic> _$TaskDtoToJson(TaskDto instance) => <String, dynamic>{
-  'id': instance.id,
+  '_id': instance.id,
   'projectId': instance.projectId,
   'milestoneId': instance.milestoneId,
   'assigneeId': instance.assigneeId,

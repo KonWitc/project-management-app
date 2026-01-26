@@ -1,5 +1,8 @@
 import 'package:app/features/projects/presentation/providers/milestones_provider.dart';
 import 'package:app/features/projects/presentation/widgets/milestones/milestone_summary_card.dart';
+import 'package:app/features/tasks/presentation/providers/project_tasks_provider.dart';
+import 'package:app/features/tasks/presentation/providers/project_tasks_state_provider.dart';
+import 'package:app/features/tasks/presentation/widgets/summary/task_summary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -32,9 +35,15 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
     context.push('/projects/${widget.projectId}/tasks');
   }
 
+  void _refreshTasks() {
+    // Invalidate the provider to refresh tasks
+    ref.invalidate(projectTasksProvider(widget.projectId));
+  }
+
   @override
   Widget build(BuildContext context) {
     final milestonesState = ref.watch(milestonesProvider(widget.projectId));
+    final tasksState = ref.watch(projectTasksStateProvider(widget.projectId));
 
     return Scaffold(
       body: CustomScrollView(
@@ -67,12 +76,13 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
                   isLoading: milestonesState.isLoading,
                 ),
 
-                // Tasks Summary Card (Placeholder)
-                const _PlaceholderCard(
-                  title: 'Tasks',
-                  icon: Icons.task_outlined,
-                  description: 'Coming soon...',
-                  color: Colors.orange,
+                // Tasks Summary Card
+                TasksSummaryCard(
+                  projectId: widget.projectId,
+                  tasks: tasksState.tasks,
+                  onViewAll: _navigateToTasks,
+                  onRefresh: _refreshTasks,
+                  isLoading: tasksState.isLoading,
                 ),
 
                 // Timeline Card (Placeholder)
@@ -119,8 +129,6 @@ class _ProjectInfoCard extends StatelessWidget {
 
     return Card(
       elevation: 2,
-      surfaceTintColor: cs.surfaceTint,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -194,8 +202,6 @@ class _PlaceholderCard extends StatelessWidget {
 
     return Card(
       elevation: 2,
-      surfaceTintColor: cs.surfaceTint,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

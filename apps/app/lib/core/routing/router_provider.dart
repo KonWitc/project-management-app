@@ -7,6 +7,7 @@ import 'package:app/features/auth/pages/login_screen.dart';
 import 'package:app/features/projects/presentation/pages/milestone_screen.dart';
 import 'package:app/features/projects/presentation/pages/project_details_screen.dart';
 import 'package:app/features/projects/presentation/pages/projects_screen.dart';
+import 'package:app/features/tasks/presentation/pages/tasks_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -40,10 +41,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 },
               ),
               GoRoute(
-            path: AppRoutePaths.themePreview,
-            name: AppRouteNames.themePreview,
-            builder: (_, __) => const ThemePreviewPage(),
-          ),
+                path: AppRoutePaths.themePreview,
+                name: AppRouteNames.themePreview,
+                builder: (_, __) => const ThemePreviewPage(),
+              ),
             ],
           ),
           GoRoute(
@@ -51,6 +52,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: AppRouteNames.projectMilestones,
             builder: (_, state) {
               return ThemePreviewPage();
+              // final id = state.pathParameters['id']!;
+              // return MilestonesPage(projectId: id);
+            },
+          ),
+          GoRoute(
+            path: AppRoutePaths.projectTasks,
+            name: AppRouteNames.projectTasks,
+            builder: (_, state) {
+              final projectId = state.pathParameters['id']!;
+              return TasksScreen(projectId: projectId);
               // final id = state.pathParameters['id']!;
               // return MilestonesPage(projectId: id);
             },

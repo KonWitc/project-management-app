@@ -4,7 +4,7 @@ part 'task_dto.g.dart';
 
 @JsonSerializable()
 class TaskDto {
-  // @JsonKey(name: '_id')
+  @JsonKey(name: '_id')
   final String id;
 
   final String projectId;
@@ -15,7 +15,7 @@ class TaskDto {
   final String title;
   final String? description;
 
-  final String status;   // 'todo' | 'in_progress' | 'blocked' | 'done'
+  final String status; // 'todo' | 'in_progress' | 'blocked' | 'done'
   final String priority; // 'low' | 'medium' | 'high' | 'critical'
 
   final int? orderIndex;
@@ -27,6 +27,7 @@ class TaskDto {
   final double? estimateHours;
   final double? loggedHours;
 
+  @JsonKey(defaultValue: [])
   final List<String>? tags;
   final String? taskType;
 
@@ -46,7 +47,7 @@ class TaskDto {
     this.completedAt,
     this.estimateHours,
     this.loggedHours,
-    required this.tags,
+    this.tags = const [],
     this.taskType,
   });
 

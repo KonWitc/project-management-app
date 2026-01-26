@@ -1,3 +1,4 @@
+import 'package:app/core/theme/app_theme.dart';
 import 'package:app/features/projects/presentation/models/card/project_card_model.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,10 @@ class ProjectCard extends StatelessWidget {
     final cs = theme.colorScheme;
 
     return Card(
-      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: project.isOverdue ? cs.racingRed : cs.outline),
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
