@@ -11,6 +11,7 @@ class AppRouteNames {
   static const String myWork = 'myWork';
   static const String settings = 'settings';
   static const String themePreview = 'themePreview';
+  static const String taskDetails = 'taskDetails';
 }
 
 class AppRoutePaths {
@@ -23,4 +24,5 @@ class AppRoutePaths {
   static const myWork = '/my-work';
   static const settings = '/settings';
   static const themePreview = '/theme-preview';
+  static const taskDetails = '/tasks/:taskId';
 }

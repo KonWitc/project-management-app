@@ -43,6 +43,7 @@ export class AuthController {
 
   @Post("signin")
   async signIn(@Body() dto: SignInDto, @Res({ passthrough: true }) res: Response) {
+    console.log("auth controller");
     const { accessToken, refreshToken } = await this.auth.signIn(dto);
     res.cookie("refresh_token", refreshToken, this.cookieOpts());
     return { accessToken };

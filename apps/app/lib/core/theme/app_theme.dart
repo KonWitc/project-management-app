@@ -107,6 +107,7 @@ class AppTheme {
       // Card theme
       cardTheme: CardThemeData(
         elevation: 3,
+        surfaceTintColor: colorScheme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
 

@@ -60,7 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final error = authAsync.error;
 
     final emailController = TextEditingController(text: 'test@example.com');
-    final passwordController = TextEditingController(text: 'password123');
+    final passwordController = TextEditingController(text: 'Password123!');
 
     return AppScaffold(
       body: Center(

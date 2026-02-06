@@ -31,7 +31,7 @@ class TagsFilter extends ConsumerWidget {
 
       final tempSelected = {...selectedTags};
       String query = '';
-
+      
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,

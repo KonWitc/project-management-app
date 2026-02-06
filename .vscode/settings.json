@@ -6,10 +6,13 @@
         "inprogress",
         "notstarted",
         "Prefs",
+        "pubspec",
         "riverpod",
+        "signup",
         "smhd",
         "usecase",
         "usecases",
-        "virtuals"
+        "virtuals",
+        "wireframes"
     ]
 }

@@ -179,7 +179,7 @@ class _TagChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return InputChip(
       label: Text(label),
-      onPressed: null, // ewentualnie: klik -> filtr / lista zadań
+      onPressed: null, // TODO: filter
     );
   }
 }

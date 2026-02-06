@@ -47,7 +47,7 @@ export const ProfileSchema = SchemaFactory.createForClass(Profile);
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({ unique: true, lowercase: true, index: true, required: true })
+  @Prop({ unique: true, lowercase: true, required: true })
   declare email: string;
 
   @Prop({ select: false, required: true })
@@ -91,7 +91,7 @@ export class User {
   @Prop() declare passwordChangedAt?: Date;
 
   // --- Soft delete ---
-  @Prop({ index: true, default: null })
+  @Prop({ default: null })
   declare deletedAt?: Date;
 }
 
